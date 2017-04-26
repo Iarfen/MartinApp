@@ -1,0 +1,24 @@
+<ion-content id="notification_movement_container">
+  <div id="toolbar">
+    <img id="toolbar_close" src="assets/close_white.png" (click)="close_menu()">
+    <h1 id="toolbar_title">{{brand}}</h1>
+    <img id="toolbar_settings" src="assets/settings.png">
+  </div>
+
+  <h2 id="son_name">{{child_name}},</h2>
+  <p id="status_message">may have experienced a sudden movements</p>
+  <img id="central_image" src="assets/exclamation.png">
+  <h2 id="listen_message">Please listen and check</h2>
+  <div id="button_listen"><img id="button_listen_img" src="assets/listen.png"><span id="button_listen_span">Listen</span></div>
+  <div id="button_call"><img id="button_call_img" src="assets/call.png"><span id="button_call_span">Call</span></div>
+  <div id="details_container">
+    <div class="detail" id="details_container_calendar"><img src="assets/calendar.png"><span>23 AGO</span></div>
+    <div class="detail" id="details_container_time"><img src="assets/time.png"><span>17:50</span></div>
+    <div class="detail" id="details_container_phone"><img src="assets/phone.png"><span>NANNY'S PHONE</span></div>
+  </div>
+  <div id="p_movement_logout">
+    <h2 id="p_movement_logout_h2">Logout</h2>
+    <p id="p_movement_logout_p">{{username}}</p>
+    <img id="p_movement_logout_image" src="assets/avatar_big.png">
+  </div>
+</ion-content>

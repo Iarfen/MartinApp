@@ -1,0 +1,17 @@
+<ion-content id="p_menu">
+  <img id="p_menu_toolbar_close" src="assets/menu_close_button.png" (click)="close_menu()">
+  <h1 id="p_menu_title">{{brand}}</h1>
+  <img id="p_menu_toolbar_settings" src="assets/menu_settings_button.png" (click)="close_menu()">
+
+  <div id="p_menu_button_home" class="p_menu_button">Home</div>
+  <div id="p_menu_button_profile" class="p_menu_button">Profile</div>
+  <div id="p_menu_button_events" class="p_menu_button" (click)="open_events()">Events</div>
+  <div id="p_menu_button_gallery" class="p_menu_button">Gallery</div>
+  <div id="p_menu_button_captures" class="p_menu_button">Captures</div>
+  <div id="p_menu_button_stats" class="p_menu_button">Stats</div>
+  <div id="p_menu_logout">
+    <h2 id="p_menu_logout_h2">Logout</h2>
+    <p id="p_menu_logout_p">{{username}}</p>
+    <img id="p_menu_logout_image" src="assets/avatar_big.png">
+  </div>
+</ion-content>

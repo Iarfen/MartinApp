@@ -1,0 +1,48 @@
+<ion-content id="home_content">
+  <div id="home_toolbar">
+    <img id="home_toolbar_close" src="assets/menuInactive.png" (click)="change_menu()">
+    <h1 id="home_toolbar_title">{{brand}}</h1>
+    <img id="home_toolbar_settings" src="assets/avatar.png">
+  </div>
+  <div id="home_content_date">
+    <img src="assets/arrow.png">
+    <span>{{current_date}}</span>
+  </div>
+  <div id="home_text">
+    <h2 id="content_user_h2">Camila's</h2>
+    <h3 id="content_user_status">Current Health and Safety Status</h3>
+  </div>
+  <div id="home_image_menu">
+    <div id="profile_image">
+      <div id="profile_image_border">
+        <img id="profile_image_img" src="assets/baby.jpg">
+      </div>
+    </div>
+    <div id="menu_body_temperature" class="selected_option">
+      <img id="menu_body_temperature_img" src="assets/bodytemp.png">
+      <div class='selected_option_text'>
+        <span>Average body temperature</span>
+      </div>
+    </div>
+    <div id="menu_pulse" class="selected_option">
+      <img id="menu_pulse_img" src="assets/pulse.png">
+      <div class='selected_option_text'>
+        <span>Pulse ox saturation</span>
+      </div>
+    </div>
+    <div id="menu_heart" class="selected_option">
+      <img id="menu_heart_img" src="assets/hearthrate.png">
+      <div class='selected_option_text'>
+        <span>heart rate</span>
+      </div>
+    </div>
+    <div id="menu_breath" class="selected_option">
+      <img id="menu_breath_img" src="assets/breath.png">
+      <div class='selected_option_text'>
+        <span>Breath frequency</span>
+      </div>
+    </div>
+  </div>
+  <span id="details_text">Go to details history</span>
+  <img id="details_img" src="assets/details.png">
+</ion-content>

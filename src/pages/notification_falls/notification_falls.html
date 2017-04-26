@@ -1,0 +1,24 @@
+<ion-content id="p_falls">
+  <div id="p_falls_toolbar">
+    <img id="p_falls_toolbar_close" src="assets/close_white.png" (click)="close_menu()">
+    <h1 id="p_falls_toolbar_title">{{brand}}</h1>
+    <img id="p_falls_toolbar_settings" src="assets/settings.png">
+  </div>
+
+  <h2 id="p_falls_son_name">{{username_firstname}},</h2>
+  <p id="p_falls_status_message">{{child_name}} may have stumbled.</p>
+  <img id="p_falls_central_image" src="assets/notification_falls.png">
+  <h2 id="p_falls_listen_message">Fall detected, check now.</h2>
+  <div id="p_falls_button_over_message">Discover her recent state</div>
+  <div id="p_falls_button_call"><span id="p_falls_button_call_span">Open Stats</span></div>
+  <div id="p_falls_details_container">
+    <div class="p_falls_detail" id="p_falls_details_container_calendar"><img src="assets/calendar.png"><span>23 AGO</span></div>
+    <div class="p_falls_detail" id="p_falls_details_container_time"><img src="assets/time.png"><span>17:50</span></div>
+    <div class="p_falls_detail" id="p_falls_details_container_phone"><img src="assets/phone.png"><span>NANNY'S PHONE</span></div>
+  </div>
+  <div id="p_falls_logout">
+    <h2 id="p_falls_logout_h2">Logout</h2>
+    <p id="p_falls_logout_p">{{username}}</p>
+    <img id="p_falls_logout_image" src="assets/avatar_big.png">
+  </div>
+</ion-content>

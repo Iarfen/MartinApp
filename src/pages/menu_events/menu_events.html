@@ -1,0 +1,18 @@
+<ion-content id="p_menu_events">
+  <img id="p_menu_events_toolbar_close" src="assets/menu_blue.png" (click)="close_menu()">
+  <h1 id="p_menu_events_title">Events</h1>
+  <img id="p_menu_events_toolbar_settings" src="assets/menu_settings_button.png" (click)="close_menu()">
+
+  <div id="p_menu_events_button_movements" class="p_menu_events_button" (click)="open_notification_movement()">Sudden Movements</div>
+  <div id="p_menu_events_button_sleep" class="p_menu_events_button" (click)="open_notification_sleep()">Sleep</div>
+  <div id="p_menu_events_button_vitals" class="p_menu_events_button" (click)="open_notification_vitals()">Vitals</div>
+  <div id="p_menu_events_button_falls" class="p_menu_events_button" (click)="open_notification_falls()">Falls</div>
+
+  <img id="p_menu_events_martin_logo" src="assets/menu_events_martin_logo.png">
+
+  <div id="p_menu_events_logout">
+    <h2 id="p_menu_events_logout_h2">Logout</h2>
+    <p id="p_menu_events_logout_p">{{username}}</p>
+    <img id="p_menu_events_logout_image" src="assets/avatar_big.png">
+  </div>
+</ion-content>

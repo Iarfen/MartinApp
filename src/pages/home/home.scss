@@ -1,0 +1,134 @@
+page-home {
+  #home_toolbar
+  {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+  }
+
+  #home_toolbar_title {
+    color: rgb(0,160,255);
+    font-family: "ArialRoundedMTBold";
+    margin: 0 !important;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+
+  #home_toolbar_close,#home_toolbar_settings
+  {
+    cursor: pointer;
+    position: absolute;
+    z-index: 2;
+  }
+
+  #home_text
+  {
+    position: absolute;
+  }
+
+  #content_user_h2 {
+    font-family: "SFUIDisplay-Ultralight";
+  }
+
+  #content_user_status {
+    font-family: "SFUIDisplay-Ultralight";
+  }
+
+  #home_content_date
+  {
+    margin-top: 18px;
+    position: relative;
+    color: rgb(0,160,255);
+  }
+
+  #home_image_menu
+  {
+    position: absolute;
+  }
+
+  #menu_button_container
+  {
+    position: absolute;
+  }
+
+  #profile_image
+  {
+    background-color: rgba(0,160, 255, 0.22);
+    border: 3px solid rgba(0,160, 255, 0.33);
+    border-radius: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    overflow: hidden;
+    padding: 50px;
+    position: absolute;
+  }
+
+  #profile_image_border
+  {
+    border: 5px solid rgba(0,160,255,0.10);
+    border-radius: 100%;
+  }
+
+  #profile_image_img
+  {
+    border: 5px solid rgba(0,160, 255, 0.33);
+    border-radius: 100%;
+    display: inline-block;
+  }
+
+  .selected_option
+  {
+    position: absolute;
+  }
+
+  .selected_option > img
+  {
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  .selected_option_detail_number
+  {
+    font-size: 25px !important;
+  }
+
+  .selected_option_exceed > .selected_option_text > span
+  {
+    color: rgb(255,0,0) !important;
+  }
+
+  .selected_option_exceed > .selected_option_detail_number
+  {
+    font-size: 30px !important;
+  }
+
+  .selected_option_text
+  {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .selected_option_text > span
+  {
+    color: rgb(0,160,255);
+    font-family: "SFUIDisplay-Regular";
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+
+  #details_text
+  {
+    color: rgb(85,85,89);
+    position: absolute;
+    text-transform: uppercase;
+  }
+
+  #details_img
+  {
+    display: inline-block;
+    position: absolute;
+  }
+}

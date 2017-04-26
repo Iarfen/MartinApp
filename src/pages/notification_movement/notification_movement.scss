@@ -1,0 +1,147 @@
+#notification_movement_container
+{
+  background: linear-gradient(to bottom, rgb(255,149,0), rgb(170,37,7));
+  position: relative;
+
+  h2, p, div
+  {
+    color: #FFFFFF;
+  }
+
+  #button_call,#button_listen
+  {
+    display: inline-block;
+    font-family: "SFUIDisplay-Bold";
+    font-size: 25px;
+    position: absolute;
+    text-transform: uppercase;
+  }
+
+  #button_call > span,#button_listen > span
+  {
+    position: absolute;
+  }
+
+  #button_call
+  {
+    background-color: rgb(253,148,38);
+  }
+
+  #button_listen
+  {
+    background-color: rgb(239,221,81);
+  }
+
+  #button_call_img,#button_listen_img
+  {
+    position: absolute;
+  }
+
+  #central_image
+  {
+    position: absolute;
+  }
+
+  .detail
+  {
+    display: inline-block;
+    font-size: 15px;
+    position: absolute;
+  }
+
+  .detail > img
+  {
+    vertical-align: middle;
+  }
+
+  .detail > span
+  {
+    margin-left: 10px;
+  }
+
+  #details_container
+  {
+    position: absolute;
+    font-family: "SFUIDisplay-Regular";
+    width: 100%;
+  }
+
+  #listen_message
+  {
+    font-family: "SFUIDisplay-Bold";
+    font-size: 25px;
+    font-weight: bold;
+    position: absolute;
+    text-align: center;
+  }
+
+  #son_name
+  {
+    display: inline-block;
+    position: absolute;
+    font-family: "SFUIDisplay-Ultralight";
+  }
+
+  #status_message
+  {
+    display: inline-block;
+    font-family: "SFUIDisplay-Ultralight";
+    position: absolute;
+  }
+
+  #toolbar
+  {
+    background: transparent !important;
+  }
+
+  #toolbar_close,#toolbar_settings
+  {
+    cursor: pointer;
+    position: absolute;
+    z-index: 2;
+  }
+
+  #toolbar_title
+  {
+    color: rgb(255,255,255);
+    font-family: "ArialRoundedMTBold";
+    margin: 0 !important;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+
+  #p_movement_logout
+  {
+    background-color: rgb(74,74,74);
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
+  }
+
+  #p_movement_logout_h2
+  {
+    color: rgb(255,255,255);
+    font-size: 21.5px;
+    margin: 0;
+    position: absolute;
+    text-transform: uppercase;
+  }
+
+  #p_movement_logout_p
+  {
+    color: rgb(0,160,255);
+    font-size: 12px;
+    margin: 0;
+    position: absolute;
+    text-transform: uppercase;
+  }
+
+  #p_movement_logout_image
+  {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+  }
+}

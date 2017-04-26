@@ -1,0 +1,143 @@
+#p_sleep
+{
+  background: linear-gradient(to bottom, rgb(195,78,248), rgb(89,89,211));
+  position: relative;
+
+  h2, p, div
+  {
+    color: #FFFFFF;
+  }
+
+  #p_sleep_button_call
+  {
+    background-color: rgb(6,31,111);
+    display: inline-block;
+    position: absolute;
+    text-transform: uppercase;
+  }
+
+  #p_sleep_button_call_span
+  {
+    font-family: "SFUIDisplay-Bold";
+    position: absolute;
+    text-align: center;
+  }
+
+  #p_sleep_button_over_message
+  {
+    color: rgb(255,255,255);
+    font-family: "SFUIDisplay-Ultralight";
+    position: absolute;
+    text-align: center;
+  }
+
+  #p_sleep_central_image
+  {
+    position: absolute;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 25px;
+  }
+
+  .p_sleep_detail
+  {
+    display: inline-block;
+    font-size: 15px;
+    position: absolute;
+  }
+
+  .p_sleep_detail > img
+  {
+    vertical-align: middle;
+  }
+
+  .p_sleep_detail > span
+  {
+    margin-left: 10px;
+  }
+
+  #p_sleep_details_container
+  {
+    position: absolute;
+    font-family: "SFUIDisplay-Regular";
+    width: 100%;
+  }
+
+  #p_sleep_listen_message
+  {
+    font-family: "SFUIDisplay-Bold";
+    font-size: 25px;
+    font-weight: bold;
+    position: absolute;
+    text-align: center;
+  }
+
+  #p_sleep_son_name
+  {
+    position: absolute;
+    font-family: "SFUIDisplay-Ultralight";
+  }
+
+  #p_sleep_status_message
+  {
+    font-size: 25px;
+    font-family: "SFUIDisplay-Ultralight";
+    position: absolute;
+  }
+
+  #p_sleep_toolbar
+  {
+    background: transparent !important;
+  }
+
+  #p_sleep_toolbar_close,#p_sleep_toolbar_settings
+  {
+    cursor: pointer;
+    position: absolute;
+    z-index: 2;
+  }
+
+  #p_sleep_toolbar_title
+  {
+    color: rgb(255,255,255);
+    font-family: "ArialRoundedMTBold";
+    margin: 0 !important;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+
+  #p_sleep_logout
+  {
+    background-color: rgb(74,74,74);
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
+  }
+
+  #p_sleep_logout_h2
+  {
+    color: rgb(255,255,255);
+    font-size: 21.5px;
+    margin: 0;
+    position: absolute;
+    text-transform: uppercase;
+  }
+
+  #p_sleep_logout_p
+  {
+    color: rgb(0,160,255);
+    font-size: 12px;
+    margin: 0;
+    position: absolute;
+    text-transform: uppercase;
+  }
+
+  #p_sleep_logout_image
+  {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+  }
+}

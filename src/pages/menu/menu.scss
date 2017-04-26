@@ -1,0 +1,65 @@
+#p_menu_toolbar_close,#p_menu_toolbar_settings
+{
+  cursor: pointer;
+  position: absolute;
+  z-index: 2;
+}
+
+#p_menu_title
+{
+  color: rgb(0,160,255);
+  font-family: "ArialRoundedMTBold";
+  margin: 0 !important;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+.p_menu_button
+{
+  color: rgb(85,85,89);
+  cursor: pointer;
+  font-family: "SFUIDisplay-Ultralight";
+  text-align: center;
+  text-transform: none;
+  position: absolute;
+}
+
+.p_menu_button:hover
+{
+  color: rgb(0,160,255);
+}
+
+#p_menu_logout
+{
+  background-color: rgb(74,74,74);
+  bottom: 0px;
+  position: absolute;
+  width: 100%;
+}
+
+#p_menu_logout_h2
+{
+  color: rgb(255,255,255);
+  font-size: 21.5px;
+  margin: 0;
+  position: absolute;
+  text-transform: uppercase;
+}
+
+#p_menu_logout_p
+{
+  color: rgb(0,160,255);
+  font-size: 12px;
+  margin: 0;
+  position: absolute;
+  text-transform: uppercase;
+}
+
+#p_menu_logout_image
+{
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
