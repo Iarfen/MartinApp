@@ -4,6 +4,8 @@ import { NavController } from 'ionic-angular';
 
 import { ui } from '../ui';
 
+import { states } from '../states';
+
 import { logoutElement } from '../logout_element/logout_element';
 
 @Component({
@@ -71,6 +73,11 @@ export class NotificationFallsPage {
 
   close_menu()
   {
+    states.mode = "normal";
+    states.fall_displayed = true;
     this.navCtrl.pop(NotificationFallsPage);
+    setTimeout(() => {
+      states.fall_displayed = false;
+    },30000);
   }
 }

@@ -239,16 +239,25 @@ export class HomePage {
               console.log(data);
               var temperature_value;
               var fall_value;
+              var pulse_value;
+              var heart_value;
+              var breath_value;
               if (data['err'] !== undefined)
               {
                 console.log(data['err']);
                 temperature_value = "";
                 fall_value = "";
+                pulse_value = "";
+                heart_value = "";
+                breath_value = "";
               }
               else
               {
                 temperature_value = data['temperature']['promedio'];
                 fall_value = data['fall']['promedio'];
+                pulse_value = data['pulse']['promedio'];
+                heart_value = data['heart']['promedio'];
+                breath_value = data['breath']['promedio'];
               }
               if ($('#menu_body_temperature_text').length == 0)
               {
@@ -258,10 +267,8 @@ export class HomePage {
               {
                 $('#menu_body_temperature_text').html(temperature_value+"ºC");
               }
-              console.log(temperature_value);
               if (temperature_value >= 30)
               {
-                console.log('here at temperature exceeded');
                 $('#menu_body_temperature').addClass('selected_option_exceed');
                 $('#menu_body_temperature_img').attr('src','assets/bodytempActive.png');
               }
@@ -270,9 +277,39 @@ export class HomePage {
                 $('#menu_body_temperature').removeClass('selected_option_exceed');
                 $('#menu_body_temperature_img').attr('src','assets/bodytemp.png');
               }
-              if (fall_value == 1 && states.mode != "fall")
+              if (pulse_value >= 30)
               {
-                states.mode = "normal";
+                $('#menu_pulse').addClass('selected_option_exceed');
+                $('#menu_pulse_img').attr('src','assets/pulse.png');
+              }
+              else
+              {
+                $('#menu_pulse').removeClass('selected_option_exceed');
+                $('#menu_pulse_img').attr('src','assets/2.png');
+              }
+              if (heart_value >= 30)
+              {
+                $('#menu_heart').addClass('selected_option_exceed');
+                $('#menu_heart_img').attr('src','assets/suenOOxygen.png');
+              }
+              else
+              {
+                $('#menu_heart').removeClass('selected_option_exceed');
+                $('#menu_heart_img').attr('src','assets/hearthrate.png');
+              }
+              if (breath_value >= 30)
+              {
+                $('#menu_breath').addClass('selected_option_exceed');
+                $('#menu_breath_img').attr('src','assets/breathe.png');
+              }
+              else
+              {
+                $('#menu_breath').removeClass('selected_option_exceed');
+                $('#menu_breath_img').attr('src','assets/breath.png');
+              }
+              if (fall_value == 1 && states.mode != "fall" && states.fall_displayed == false)
+              {
+                states.mode = "fall";
                 this.navCtrl.push(NotificationFallsPage);
               }
             });
