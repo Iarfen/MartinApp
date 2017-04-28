@@ -265,7 +265,31 @@ export class HomePage {
               }
               else
               {
-                $('#menu_body_temperature_text').html(temperature_value+"ºC");
+                $('#menu_body_temperature_text').html(temperature_value + "ºC");
+              }
+              if ($('#menu_pulse_text').length == 0)
+              {
+                $('#menu_pulse').children('.selected_option_text').prepend("<span id='menu_pulse_text' class='selected_option_detail_number'>" + pulse_value + "%</span><br>");
+              }
+              else
+              {
+                $('#menu_pulse_text').html(pulse_value + "%");
+              }
+              if ($('#menu_heart_text').length == 0)
+              {
+                $('#menu_heart').children('.selected_option_text').prepend("<span id='menu_heart_text' class='selected_option_detail_number'>" + heart_value + "%</span><br>");
+              }
+              else
+              {
+                $('#menu_heart_text').html(heart_value + "%");
+              }
+              if ($('#menu_breath_text').length == 0)
+              {
+                $('#menu_breath').children('.selected_option_text').prepend("<span id='menu_breath_text' class='selected_option_detail_number'>" + breath_value + "%</span><br>");
+              }
+              else
+              {
+                $('#menu_breath_text').html(breath_value + "%");
               }
               if (temperature_value >= 30)
               {
