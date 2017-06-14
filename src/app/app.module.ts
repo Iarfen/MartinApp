@@ -9,6 +9,7 @@ import { NotificationSleepPage } from '../pages/notification_sleep/notification_
 import { NotificationVitalsPage } from '../pages/notification_vitals/notification_vitals';
 import { NotificationFallsPage } from '../pages/notification_falls/notification_falls';
 import { HttpModule, JsonpModule } from '@angular/http';
+import { File } from '@ionic-native/file';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,6 @@ import { HttpModule, JsonpModule } from '@angular/http';
     NotificationVitalsPage,
     NotificationFallsPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
+  providers: [File,{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })
 export class AppModule {}

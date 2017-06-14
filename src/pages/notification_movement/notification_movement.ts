@@ -4,7 +4,11 @@ import { NavController } from 'ionic-angular';
 
 import { ui } from '../ui';
 
+import { states } from '../states';
+
 import { logoutElement } from '../logout_element/logout_element';
+
+import * as $ from "jquery";
 
 @Component({
   selector: 'page_notification_movement',
@@ -71,10 +75,21 @@ export class NotificationMovementPage {
     ui.position_append("details_container_calendar","details_container",25/375,0);
     ui.position_append("details_container_time","details_container",111.5/375,0);
     ui.position_append("details_container_phone","details_container",191/375,0);
+
+    $('#button_listen').click(function(){
+      console.log("Touching audio!");
+      var audio = new Audio("https://s3-sa-east-1.amazonaws.com/martin-audio/Data07_test.wav");
+      audio.play();
+    });
   }
 
   close_menu()
   {
+    states.mode = "normal";
+    states.movement_displayed = true;
     this.navCtrl.pop(NotificationMovementPage);
+    setTimeout(() => {
+      states.movement_displayed = false;
+    },30000);
   }
 }

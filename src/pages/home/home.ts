@@ -11,6 +11,8 @@ import { NavController } from 'ionic-angular';
 
 import { BLE } from 'ionic-native';
 
+import { File } from '@ionic-native/file';
+
 import { MenuPage } from '../menu/menu';
 
 import { ui } from '../ui';
@@ -31,6 +33,14 @@ import * as Amqp from 'amqp-ts';
 
 import * as $ from "jquery";
 
+declare var AWS: any;
+
+import * as async from "async";
+
+//import * as AWS from 'aws-sdk';
+
+//import * as S3 from 'aws-sdk/clients/s3';
+
 //import * as amqp from 'amqplib/callback_api';
 
 //import * as rabbit from 'rabbit.js';
@@ -45,7 +55,6 @@ import * as $ from "jquery";
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-
 export class HomePage {
   brand: string;
   current_date: string;
@@ -53,14 +62,16 @@ export class HomePage {
   screen_height: number;
   http: Http;
   notification_mode: boolean;
+  file: File;
 
-  constructor(public navCtrl: NavController, public http2: Http, platform: Platform) {
+  constructor(public navCtrl: NavController, public http2: Http, platform: Platform, private file2: File) {
     this.brand = 'Martin';
     var actual_date = new Date();
     this.current_date = actual_date.getDay().toString() + ", " + actual_date.getMonth().toString() + " " + actual_date.getDay().toString();
     this.screen_width = window.innerWidth;
     this.screen_height = window.innerHeight;
     this.http = http2;
+    this.file = file2;
 /*    platform.ready().then(() => {
       console.log("Devices to search on");
       BLE.enable();
@@ -231,33 +242,199 @@ export class HomePage {
           console.log(error);
         });*/
 
+    /*this.http.get("https://s3-sa-east-1.amazonaws.com/martin-audio/Data07_test.wav")
+      .map(res => res.json())
+      .subscribe(data => {
+        console.log("hello wan!");
+        console.log(data);
+      });*/
+
+  // var uploadParams = {Bucket: process.argv[2], Key: '', Body: ''};
+//  var uploadParams = {Bucket: '', Key: '', Body: ''};
+
+  // Load credentials and set region from JSON file
+//  AWS.config.loadFromPath("/Users/jorge/Documents/javascipt_workspace/docking_station/uploader/config.json");
+
+//var audio = new Audio("https://s3-sa-east-1.amazonaws.com/martin-audio/Data07_test.wav");
+//audio.loop = true;
+//audio.play();
+
+  AWS.config.update({
+    region: "sa-east-1"
+  });
+
+    const options = {
+        accessKeyId: 'AKIAJOK7RCQHKTH2SYUA',
+        secretAccessKey: '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',
+        region: "sa-east-1"
+    };
+    const s3 = new AWS.S3(options); // Pass in opts to S3 if necessary
+
+    var getParams = {
+      Bucket: 'martin-audio', // your bucket name,
+      Key: 'Data07_test.wav' // path to the object you're looking for
+    };
+
+    s3.getObject(getParams, function(err, data) {
+      console.log("hello get object!");
+      console.log(err);
+      if (err)
+          return err;
+
+      console.log(data);
+      /*var audio = new Audio(data);
+      audio.loop = true;
+      audio.play();*/
+
+      //let objectData = data.Body.toString('utf-8'); // Use the encoding necessary
+    });
+
+    console.log("hi!");
+
     setInterval(() => {
       this.http.get("http://54.233.152.245:8000/")
             .map(res => res.json())
             .subscribe(data => {
               console.log('hello!');
               console.log(data);
+              var log_data : string = JSON.stringify(data);
+              this.file.checkFile(this.file.dataDirectory,"events_log.txt")
+                .then(obj => { this.file.readAsText(this.file.dataDirectory,"events_log.txt")
+                                .then(text => {console.log("read file"); this.file.writeExistingFile(this.file.dataDirectory,"events_log.txt",log_data + '\n' + text)})
+                                .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))}); })
+                .catch(err => {
+                  this.file.createFile(this.file.dataDirectory,"events_log.txt",true)
+                    .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))});
+                  this.file.writeExistingFile(this.file.dataDirectory,"events_log.txt",log_data)
+                    .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))});
+                });
+
               var temperature_value;
-              var fall_value;
               var pulse_value;
               var heart_value;
               var breath_value;
+
+              var fall_state;
+              var shake_state;
+              var path_state;
+              var sleep_state;
+
+              var previous_temperature_value = null;
+              var previous_pulse_value = null;
+              var previous_heart_value = null;
+              var previous_breath_value = null;
+
               if (data['err'] !== undefined)
               {
                 console.log(data['err']);
-                temperature_value = "";
-                fall_value = "";
-                pulse_value = "";
-                heart_value = "";
-                breath_value = "";
+                if (previous_temperature_value != null)
+                {
+                  temperature_value = previous_temperature_value;
+                }
+                else
+                {
+                  temperature_value = "";
+                }
+                if (previous_pulse_value != null)
+                {
+                  pulse_value = previous_pulse_value;
+                }
+                else
+                {
+                  pulse_value = "";
+                }
+                if (previous_heart_value != null)
+                {
+                  heart_value = previous_heart_value;
+                }
+                else
+                {
+                  heart_value = "";
+                }
+                if (previous_breath_value != null)
+                {
+                  breath_value = previous_breath_value;
+                }
+                else
+                {
+                  breath_value = "";
+                }
+
+                fall_state = "";
+                shake_state = "";
+                path_state = "";
+                sleep_state = "";
               }
               else
               {
-                temperature_value = data['temperature']['promedio'];
-                fall_value = data['fall']['promedio'];
-                pulse_value = data['pulse']['promedio'];
-                heart_value = data['heart']['promedio'];
-                breath_value = data['breath']['promedio'];
+                if (isFinite(data['temperature']['promedio']))
+                {
+                  temperature_value = data['temperature']['promedio'];
+                }
+                else
+                {
+                  if (previous_temperature_value != null)
+                  {
+                    temperature_value = previous_temperature_value;
+                  }
+                  else
+                  {
+                    temperature_value = "";
+                  }
+                }
+                if (isFinite(data['ox_saturation']['promedio']))
+                {
+                  pulse_value = data['ox_saturation']['promedio'];
+                }
+                else
+                {
+                  if (previous_pulse_value != null)
+                  {
+                    pulse_value = previous_pulse_value;
+                  }
+                  else
+                  {
+                    pulse_value = "";
+                  }
+                }
+                if (isFinite(data['pulse']['promedio']))
+                {
+                  heart_value = data['pulse']['promedio'];
+                }
+                else
+                {
+                  if (previous_heart_value != null)
+                  {
+                    heart_value = previous_heart_value;
+                  }
+                  else
+                  {
+                    heart_value = "";
+                  }
+                }
+                if (isFinite(data['breath_freq']['promedio']))
+                {
+                  breath_value = data['breath_freq']['promedio'];
+                }
+                else
+                {
+                  if (previous_breath_value != null)
+                  {
+                    breath_value = previous_breath_value;
+                  }
+                  else
+                  {
+                    breath_value = "";
+                  }
+                }
+                /*pulse_value = data['ox_saturation']['promedio'];
+                heart_value = data['pulse']['promedio'];
+                breath_value = data['breath_freq']['promedio'];*/
+
+                fall_state = data['fall']['state'];
+                shake_state = data['shake']['state'];
+                path_state = data['path']['state'];
+                sleep_state = data['sleep']['state'];
               }
               if ($('#menu_body_temperature_text').length == 0)
               {
@@ -331,19 +508,74 @@ export class HomePage {
                 $('#menu_breath').removeClass('selected_option_exceed');
                 $('#menu_breath_img').attr('src','assets/breath.png');
               }
-              if (fall_value == 1 && states.mode != "fall" && states.fall_displayed == false)
+              if (fall_state == 1 && states.mode != "fall" && states.fall_displayed == false)
               {
                 states.mode = "fall";
+                if ($('#p_falls').length > 0)
+                {
+                  console.log("fall already present");
+                  this.navCtrl.pop(NotificationFallsPage);
+                  //$('#p_falls').parent().remove();
+                }
+                states.fall_displayed = true;
+                setTimeout(() => {
+                  states.fall_displayed = false;
+                },30000);
                 this.navCtrl.push(NotificationFallsPage);
               }
+              if (shake_state == 1 && states.mode != "movement" && states.movement_displayed == false)
+              {
+                states.mode = "movement";
+                if ($('#notification_movement_container').length > 0)
+                {
+                  this.navCtrl.pop(NotificationMovementPage);
+                  //$('#notification_movement_container').parent().remove();
+                }
+                states.movement_displayed = true;
+                setTimeout(() => {
+                  states.movement_displayed = false;
+                },30000);
+                this.navCtrl.push(NotificationMovementPage);
+                $('#button_listen').click(function(){
+                  var audio = new Audio(data['shake']['audio_file']);
+                  //var audio = new Audio("https://s3-sa-east-1.amazonaws.com/martin-audio/Data07_test.wav");
+                  audio.play();
+                });
+              }
+              if (path_state == 1 && states.mode != "path" && states.path_displayed == false)
+              {
+                states.mode = "path";
+                if ($('#p_vitals').length > 0)
+                {
+                  this.navCtrl.pop(NotificationVitalsPage);
+                  //$('#p_vitals').parent().remove();
+                }
+                states.path_displayed = true;
+                setTimeout(() => {
+                  states.path_displayed = false;
+                },30000);
+                this.navCtrl.push(NotificationVitalsPage);
+              }
+              if (sleep_state == 1 && states.mode != "sleep" && states.sleep_displayed == false)
+              {
+                states.mode = "sleep";
+                if ($('#p_sleep').length > 0)
+                {
+                  this.navCtrl.pop(NotificationSleepPage);
+                  //$('#p_sleep').parent().remove();
+                }
+                states.sleep_displayed = true;
+                setTimeout(() => {
+                  states.sleep_displayed = false;
+                },30000);
+                this.navCtrl.push(NotificationSleepPage);
+              }
+              previous_temperature_value = temperature_value;
+              previous_pulse_value = pulse_value;
+              previous_heart_value = heart_value;
+              previous_breath_value = breath_value;
             });
     },1000);
-
-    this.http.get("http://www.google.cl/")
-          .map(res => res.json())
-          .subscribe(data => {
-            console.log('hello i find google!');
-          });
 
     //sensor.set_db();
     //sensor.add_data();
