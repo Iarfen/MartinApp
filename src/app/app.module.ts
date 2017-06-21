@@ -10,6 +10,8 @@ import { NotificationVitalsPage } from '../pages/notification_vitals/notificatio
 import { NotificationFallsPage } from '../pages/notification_falls/notification_falls';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { File } from '@ionic-native/file';
+import { Network } from '@ionic-native/network';
+import { Dialogs } from '@ionic-native/dialogs';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,6 @@ import { File } from '@ionic-native/file';
     NotificationVitalsPage,
     NotificationFallsPage
   ],
-  providers: [File,{provide: ErrorHandler, useClass: IonicErrorHandler}]
+  providers: [File,Network,Dialogs,{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })
 export class AppModule {}

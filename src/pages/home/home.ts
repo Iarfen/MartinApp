@@ -13,6 +13,10 @@ import { BLE } from 'ionic-native';
 
 import { File } from '@ionic-native/file';
 
+import { Network } from '@ionic-native/network';
+
+import { Dialogs } from '@ionic-native/dialogs';
+
 import { MenuPage } from '../menu/menu';
 
 import { ui } from '../ui';
@@ -63,8 +67,9 @@ export class HomePage {
   http: Http;
   notification_mode: boolean;
   file: File;
+  device_connected: boolean = true;
 
-  constructor(public navCtrl: NavController, public http2: Http, platform: Platform, private file2: File) {
+  constructor(public navCtrl: NavController, public http2: Http, platform: Platform, private file2: File, private network: Network, private dialogs: Dialogs) {
     this.brand = 'Martin';
     var actual_date = new Date();
     this.current_date = actual_date.getDay().toString() + ", " + actual_date.getMonth().toString() + " " + actual_date.getDay().toString();
@@ -72,6 +77,26 @@ export class HomePage {
     this.screen_height = window.innerHeight;
     this.http = http2;
     this.file = file2;
+    platform.ready().then(() => {
+      network.onConnect().subscribe(
+        res => console.log(res),
+        err => console.log(err),
+        () => console.log('done')
+      );
+      network.onDisconnect().subscribe(
+        res => console.log(res),
+        err => console.log(err),
+        () => console.log('done')
+      );
+      /*this.network.onConnect().subscribe(() => {
+        console.log("event_connected");
+        this.device_connected = true;
+      });
+      this.network.onDisconnect().subscribe(() => {
+        console.log("event_disconnected");
+        this.device_connected = false;
+      });*/
+    });
 /*    platform.ready().then(() => {
       console.log("Devices to search on");
       BLE.enable();
@@ -204,6 +229,8 @@ export class HomePage {
     ui.font_size("content_user_h2",30/667);
     ui.font_size("content_user_status",20/667);
 
+    this.connect_update();
+
     //var exec = require('child_process').exec;
 
     /*var req = {
@@ -259,9 +286,41 @@ export class HomePage {
 //audio.loop = true;
 //audio.play();
 
-  AWS.config.update({
-    region: "sa-east-1"
-  });
+    //sensor.set_db();
+    //sensor.add_data();
+  }
+
+  change_menu()
+  {
+    this.navCtrl.push(MenuPage);
+  }
+
+  update_stats()
+  {
+    this.http.get("http://54.233.152.245:8000/")
+          .map(res => res.json())
+          .subscribe(data => {
+            console.log('hello!');
+            console.log(data);
+            var temperature_value = data['temperature']['promedio'];
+            if ($('#menu_body_temperature_text').length == 0)
+            {
+              $('#menu_body_temperature').children('.selected_option_text').prepend("<span id='menu_body_temperature_text' class='selected_option_detail_number'>" + temperature_value + "ºC</span><br>");
+            }
+            else
+            {
+              $('#menu_body_temperature_text').html(temperature_value+"ºC");
+            }
+          });
+  }
+
+  connect_update()
+  {
+    console.log("connect update");
+
+    AWS.config.update({
+      region: "sa-east-1"
+    });
 
     const options = {
         accessKeyId: 'AKIAJOK7RCQHKTH2SYUA',
@@ -291,88 +350,50 @@ export class HomePage {
 
     console.log("hi!");
 
+    this.file.removeFile(this.file.dataDirectory,"events_log.txt");
+
     setInterval(() => {
-      this.http.get("http://54.233.152.245:8000/")
-            .map(res => res.json())
-            .subscribe(data => {
-              console.log('hello!');
-              console.log(data);
-              var log_data : string = JSON.stringify(data);
-              this.file.checkFile(this.file.dataDirectory,"events_log.txt")
-                .then(obj => { this.file.readAsText(this.file.dataDirectory,"events_log.txt")
-                                .then(text => {console.log("read file"); this.file.writeExistingFile(this.file.dataDirectory,"events_log.txt",log_data + '\n' + text)})
-                                .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))}); })
-                .catch(err => {
-                  this.file.createFile(this.file.dataDirectory,"events_log.txt",true)
-                    .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))});
-                  this.file.writeExistingFile(this.file.dataDirectory,"events_log.txt",log_data)
-                    .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))});
-                });
+      console.log("device_connection_status: " + this.device_connected);
+        if (!this.device_connected)
+        {
+          this.dialogs.alert('Hello world');
+          return;
+        }
+        this.http.get("http://54.233.152.245:8000/")
+              .map(res => res.json())
+              .subscribe(data => {
+                console.log('hello!');
+                console.log(data);
+                var log_data : string = JSON.stringify(data);
+                this.file.checkFile(this.file.dataDirectory,"events_log.txt")
+                  .then(obj => { this.file.readAsText(this.file.dataDirectory,"events_log.txt")
+                                  .then(text => {console.log("read file"); this.file.writeExistingFile(this.file.dataDirectory,"events_log.txt",log_data + '\n' + text)})
+                                  .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))}); })
+                  .catch(err => {
+                    this.file.createFile(this.file.dataDirectory,"events_log.txt",true)
+                      .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))});
+                    this.file.writeExistingFile(this.file.dataDirectory,"events_log.txt",log_data)
+                      .catch(error => {console.log('writing to file'); console.log(JSON.stringify(error))});
+                  });
 
-              var temperature_value;
-              var pulse_value;
-              var heart_value;
-              var breath_value;
+                var temperature_value;
+                var pulse_value;
+                var heart_value;
+                var breath_value;
 
-              var fall_state;
-              var shake_state;
-              var path_state;
-              var sleep_state;
+                var fall_state;
+                var shake_state;
+                var path_state;
+                var sleep_state;
 
-              var previous_temperature_value = null;
-              var previous_pulse_value = null;
-              var previous_heart_value = null;
-              var previous_breath_value = null;
+                var previous_temperature_value = null;
+                var previous_pulse_value = null;
+                var previous_heart_value = null;
+                var previous_breath_value = null;
 
-              if (data['err'] !== undefined)
-              {
-                console.log(data['err']);
-                if (previous_temperature_value != null)
+                if (data['err'] !== undefined)
                 {
-                  temperature_value = previous_temperature_value;
-                }
-                else
-                {
-                  temperature_value = "";
-                }
-                if (previous_pulse_value != null)
-                {
-                  pulse_value = previous_pulse_value;
-                }
-                else
-                {
-                  pulse_value = "";
-                }
-                if (previous_heart_value != null)
-                {
-                  heart_value = previous_heart_value;
-                }
-                else
-                {
-                  heart_value = "";
-                }
-                if (previous_breath_value != null)
-                {
-                  breath_value = previous_breath_value;
-                }
-                else
-                {
-                  breath_value = "";
-                }
-
-                fall_state = "";
-                shake_state = "";
-                path_state = "";
-                sleep_state = "";
-              }
-              else
-              {
-                if (isFinite(data['temperature']['promedio']))
-                {
-                  temperature_value = data['temperature']['promedio'];
-                }
-                else
-                {
+                  console.log(data['err']);
                   if (previous_temperature_value != null)
                   {
                     temperature_value = previous_temperature_value;
@@ -381,13 +402,6 @@ export class HomePage {
                   {
                     temperature_value = "";
                   }
-                }
-                if (isFinite(data['ox_saturation']['promedio']))
-                {
-                  pulse_value = data['ox_saturation']['promedio'];
-                }
-                else
-                {
                   if (previous_pulse_value != null)
                   {
                     pulse_value = previous_pulse_value;
@@ -396,13 +410,6 @@ export class HomePage {
                   {
                     pulse_value = "";
                   }
-                }
-                if (isFinite(data['pulse']['promedio']))
-                {
-                  heart_value = data['pulse']['promedio'];
-                }
-                else
-                {
                   if (previous_heart_value != null)
                   {
                     heart_value = previous_heart_value;
@@ -411,13 +418,6 @@ export class HomePage {
                   {
                     heart_value = "";
                   }
-                }
-                if (isFinite(data['breath_freq']['promedio']))
-                {
-                  breath_value = data['breath_freq']['promedio'];
-                }
-                else
-                {
                   if (previous_breath_value != null)
                   {
                     breath_value = previous_breath_value;
@@ -426,182 +426,222 @@ export class HomePage {
                   {
                     breath_value = "";
                   }
-                }
-                /*pulse_value = data['ox_saturation']['promedio'];
-                heart_value = data['pulse']['promedio'];
-                breath_value = data['breath_freq']['promedio'];*/
 
-                fall_state = data['fall']['state'];
-                shake_state = data['shake']['state'];
-                path_state = data['path']['state'];
-                sleep_state = data['sleep']['state'];
-              }
-              if ($('#menu_body_temperature_text').length == 0)
-              {
-                $('#menu_body_temperature').children('.selected_option_text').prepend("<span id='menu_body_temperature_text' class='selected_option_detail_number'>" + temperature_value + "ºC</span><br>");
-              }
-              else
-              {
-                $('#menu_body_temperature_text').html(temperature_value + "ºC");
-              }
-              if ($('#menu_pulse_text').length == 0)
-              {
-                $('#menu_pulse').children('.selected_option_text').prepend("<span id='menu_pulse_text' class='selected_option_detail_number'>" + pulse_value + "%</span><br>");
-              }
-              else
-              {
-                $('#menu_pulse_text').html(pulse_value + "%");
-              }
-              if ($('#menu_heart_text').length == 0)
-              {
-                $('#menu_heart').children('.selected_option_text').prepend("<span id='menu_heart_text' class='selected_option_detail_number'>" + heart_value + "%</span><br>");
-              }
-              else
-              {
-                $('#menu_heart_text').html(heart_value + "%");
-              }
-              if ($('#menu_breath_text').length == 0)
-              {
-                $('#menu_breath').children('.selected_option_text').prepend("<span id='menu_breath_text' class='selected_option_detail_number'>" + breath_value + "%</span><br>");
-              }
-              else
-              {
-                $('#menu_breath_text').html(breath_value + "%");
-              }
-              if (temperature_value >= 30)
-              {
-                $('#menu_body_temperature').addClass('selected_option_exceed');
-                $('#menu_body_temperature_img').attr('src','assets/bodytempActive.png');
-              }
-              else
-              {
-                $('#menu_body_temperature').removeClass('selected_option_exceed');
-                $('#menu_body_temperature_img').attr('src','assets/bodytemp.png');
-              }
-              if (pulse_value >= 30)
-              {
-                $('#menu_pulse').addClass('selected_option_exceed');
-                $('#menu_pulse_img').attr('src','assets/pulse.png');
-              }
-              else
-              {
-                $('#menu_pulse').removeClass('selected_option_exceed');
-                $('#menu_pulse_img').attr('src','assets/2.png');
-              }
-              if (heart_value >= 30)
-              {
-                $('#menu_heart').addClass('selected_option_exceed');
-                $('#menu_heart_img').attr('src','assets/suenOOxygen.png');
-              }
-              else
-              {
-                $('#menu_heart').removeClass('selected_option_exceed');
-                $('#menu_heart_img').attr('src','assets/hearthrate.png');
-              }
-              if (breath_value >= 30)
-              {
-                $('#menu_breath').addClass('selected_option_exceed');
-                $('#menu_breath_img').attr('src','assets/breathe.png');
-              }
-              else
-              {
-                $('#menu_breath').removeClass('selected_option_exceed');
-                $('#menu_breath_img').attr('src','assets/breath.png');
-              }
-              if (fall_state == 1 && states.mode != "fall" && states.fall_displayed == false)
-              {
-                states.mode = "fall";
-                if ($('#p_falls').length > 0)
-                {
-                  console.log("fall already present");
-                  this.navCtrl.pop(NotificationFallsPage);
-                  //$('#p_falls').parent().remove();
+                  fall_state = "";
+                  shake_state = "";
+                  path_state = "";
+                  sleep_state = "";
                 }
-                states.fall_displayed = true;
-                setTimeout(() => {
-                  states.fall_displayed = false;
-                },30000);
-                this.navCtrl.push(NotificationFallsPage);
-              }
-              if (shake_state == 1 && states.mode != "movement" && states.movement_displayed == false)
-              {
-                states.mode = "movement";
-                if ($('#notification_movement_container').length > 0)
+                else
                 {
-                  this.navCtrl.pop(NotificationMovementPage);
-                  //$('#notification_movement_container').parent().remove();
-                }
-                states.movement_displayed = true;
-                setTimeout(() => {
-                  states.movement_displayed = false;
-                },30000);
-                this.navCtrl.push(NotificationMovementPage);
-                $('#button_listen').click(function(){
-                  var audio = new Audio(data['shake']['audio_file']);
-                  //var audio = new Audio("https://s3-sa-east-1.amazonaws.com/martin-audio/Data07_test.wav");
-                  audio.play();
-                });
-              }
-              if (path_state == 1 && states.mode != "path" && states.path_displayed == false)
-              {
-                states.mode = "path";
-                if ($('#p_vitals').length > 0)
-                {
-                  this.navCtrl.pop(NotificationVitalsPage);
-                  //$('#p_vitals').parent().remove();
-                }
-                states.path_displayed = true;
-                setTimeout(() => {
-                  states.path_displayed = false;
-                },30000);
-                this.navCtrl.push(NotificationVitalsPage);
-              }
-              if (sleep_state == 1 && states.mode != "sleep" && states.sleep_displayed == false)
-              {
-                states.mode = "sleep";
-                if ($('#p_sleep').length > 0)
-                {
-                  this.navCtrl.pop(NotificationSleepPage);
-                  //$('#p_sleep').parent().remove();
-                }
-                states.sleep_displayed = true;
-                setTimeout(() => {
-                  states.sleep_displayed = false;
-                },30000);
-                this.navCtrl.push(NotificationSleepPage);
-              }
-              previous_temperature_value = temperature_value;
-              previous_pulse_value = pulse_value;
-              previous_heart_value = heart_value;
-              previous_breath_value = breath_value;
-            });
-    },1000);
+                  if (isFinite(data['temperature']['promedio']))
+                  {
+                    temperature_value = data['temperature']['promedio'];
+                  }
+                  else
+                  {
+                    if (previous_temperature_value != null)
+                    {
+                      temperature_value = previous_temperature_value;
+                    }
+                    else
+                    {
+                      temperature_value = "";
+                    }
+                  }
+                  if (isFinite(data['ox_saturation']['promedio']))
+                  {
+                    pulse_value = data['ox_saturation']['promedio'];
+                  }
+                  else
+                  {
+                    if (previous_pulse_value != null)
+                    {
+                      pulse_value = previous_pulse_value;
+                    }
+                    else
+                    {
+                      pulse_value = "";
+                    }
+                  }
+                  if (isFinite(data['pulse']['promedio']))
+                  {
+                    heart_value = data['pulse']['promedio'];
+                  }
+                  else
+                  {
+                    if (previous_heart_value != null)
+                    {
+                      heart_value = previous_heart_value;
+                    }
+                    else
+                    {
+                      heart_value = "";
+                    }
+                  }
+                  if (isFinite(data['breath_freq']['promedio']))
+                  {
+                    breath_value = data['breath_freq']['promedio'];
+                  }
+                  else
+                  {
+                    if (previous_breath_value != null)
+                    {
+                      breath_value = previous_breath_value;
+                    }
+                    else
+                    {
+                      breath_value = "";
+                    }
+                  }
+                  /*pulse_value = data['ox_saturation']['promedio'];
+                  heart_value = data['pulse']['promedio'];
+                  breath_value = data['breath_freq']['promedio'];*/
 
-    //sensor.set_db();
-    //sensor.add_data();
-  }
-
-  change_menu()
-  {
-    this.navCtrl.push(MenuPage);
-  }
-
-  update_stats()
-  {
-    this.http.get("http://54.233.152.245:8000/")
-          .map(res => res.json())
-          .subscribe(data => {
-            console.log('hello!');
-            console.log(data);
-            var temperature_value = data['temperature']['promedio'];
-            if ($('#menu_body_temperature_text').length == 0)
-            {
-              $('#menu_body_temperature').children('.selected_option_text').prepend("<span id='menu_body_temperature_text' class='selected_option_detail_number'>" + temperature_value + "ºC</span><br>");
-            }
-            else
-            {
-              $('#menu_body_temperature_text').html(temperature_value+"ºC");
-            }
-          });
+                  fall_state = data['fall']['state'];
+                  shake_state = data['shake']['state'];
+                  path_state = data['path']['state'];
+                  sleep_state = data['sleep']['state'];
+                }
+                if ($('#menu_body_temperature_text').length == 0)
+                {
+                  $('#menu_body_temperature').children('.selected_option_text').prepend("<span id='menu_body_temperature_text' class='selected_option_detail_number'>" + temperature_value + "ºC</span><br>");
+                }
+                else
+                {
+                  $('#menu_body_temperature_text').html(temperature_value + "ºC");
+                }
+                if ($('#menu_pulse_text').length == 0)
+                {
+                  $('#menu_pulse').children('.selected_option_text').prepend("<span id='menu_pulse_text' class='selected_option_detail_number'>" + pulse_value + "%</span><br>");
+                }
+                else
+                {
+                  $('#menu_pulse_text').html(pulse_value + "%");
+                }
+                if ($('#menu_heart_text').length == 0)
+                {
+                  $('#menu_heart').children('.selected_option_text').prepend("<span id='menu_heart_text' class='selected_option_detail_number'>" + heart_value + "%</span><br>");
+                }
+                else
+                {
+                  $('#menu_heart_text').html(heart_value + "%");
+                }
+                if ($('#menu_breath_text').length == 0)
+                {
+                  $('#menu_breath').children('.selected_option_text').prepend("<span id='menu_breath_text' class='selected_option_detail_number'>" + breath_value + "%</span><br>");
+                }
+                else
+                {
+                  $('#menu_breath_text').html(breath_value + "%");
+                }
+                if (temperature_value >= 30)
+                {
+                  $('#menu_body_temperature').addClass('selected_option_exceed');
+                  $('#menu_body_temperature_img').attr('src','assets/bodytempActive.png');
+                }
+                else
+                {
+                  $('#menu_body_temperature').removeClass('selected_option_exceed');
+                  $('#menu_body_temperature_img').attr('src','assets/bodytemp.png');
+                }
+                if (pulse_value >= 30)
+                {
+                  $('#menu_pulse').addClass('selected_option_exceed');
+                  $('#menu_pulse_img').attr('src','assets/pulse.png');
+                }
+                else
+                {
+                  $('#menu_pulse').removeClass('selected_option_exceed');
+                  $('#menu_pulse_img').attr('src','assets/2.png');
+                }
+                if (heart_value >= 30)
+                {
+                  $('#menu_heart').addClass('selected_option_exceed');
+                  $('#menu_heart_img').attr('src','assets/suenOOxygen.png');
+                }
+                else
+                {
+                  $('#menu_heart').removeClass('selected_option_exceed');
+                  $('#menu_heart_img').attr('src','assets/hearthrate.png');
+                }
+                if (breath_value >= 30)
+                {
+                  $('#menu_breath').addClass('selected_option_exceed');
+                  $('#menu_breath_img').attr('src','assets/breathe.png');
+                }
+                else
+                {
+                  $('#menu_breath').removeClass('selected_option_exceed');
+                  $('#menu_breath_img').attr('src','assets/breath.png');
+                }
+                if (fall_state == 1 && states.mode != "fall" && states.fall_displayed == false)
+                {
+                  states.mode = "fall";
+                  if ($('#p_falls').length > 0)
+                  {
+                    console.log("fall already present");
+                    this.navCtrl.pop(NotificationFallsPage);
+                    //$('#p_falls').parent().remove();
+                  }
+                  states.fall_displayed = true;
+                  setTimeout(() => {
+                    states.fall_displayed = false;
+                  },30000);
+                  this.navCtrl.push(NotificationFallsPage);
+                }
+                if (shake_state == 1 && states.mode != "movement" && states.movement_displayed == false)
+                {
+                  states.mode = "movement";
+                  if ($('#notification_movement_container').length > 0)
+                  {
+                    this.navCtrl.pop(NotificationMovementPage);
+                    //$('#notification_movement_container').parent().remove();
+                  }
+                  states.movement_displayed = true;
+                  setTimeout(() => {
+                    states.movement_displayed = false;
+                  },30000);
+                  this.navCtrl.push(NotificationMovementPage);
+                  $('#button_listen').click(function(){
+                    var audio = new Audio(data['shake']['audio_file']);
+                    //var audio = new Audio("https://s3-sa-east-1.amazonaws.com/martin-audio/Data07_test.wav");
+                    audio.play();
+                  });
+                }
+                if (path_state == 1 && states.mode != "path" && states.path_displayed == false)
+                {
+                  states.mode = "path";
+                  if ($('#p_vitals').length > 0)
+                  {
+                    this.navCtrl.pop(NotificationVitalsPage);
+                    //$('#p_vitals').parent().remove();
+                  }
+                  states.path_displayed = true;
+                  setTimeout(() => {
+                    states.path_displayed = false;
+                  },30000);
+                  this.navCtrl.push(NotificationVitalsPage);
+                }
+                if (sleep_state == 1 && states.mode != "sleep" && states.sleep_displayed == false)
+                {
+                  states.mode = "sleep";
+                  if ($('#p_sleep').length > 0)
+                  {
+                    this.navCtrl.pop(NotificationSleepPage);
+                    //$('#p_sleep').parent().remove();
+                  }
+                  states.sleep_displayed = true;
+                  setTimeout(() => {
+                    states.sleep_displayed = false;
+                  },30000);
+                  this.navCtrl.push(NotificationSleepPage);
+                }
+                previous_temperature_value = temperature_value;
+                previous_pulse_value = pulse_value;
+                previous_heart_value = heart_value;
+                previous_breath_value = breath_value;
+              });
+      },800);
   }
 }
