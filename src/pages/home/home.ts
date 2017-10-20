@@ -323,8 +323,8 @@ export class HomePage {
     });
 
     const options = {
-        accessKeyId: 'AKIAJOK7RCQHKTH2SYUA',
-        secretAccessKey: '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',
+        accessKeyId: 'ACCESSKEYID',
+        secretAccessKey: 'SECRETACCESSKEY',
         region: "sa-east-1"
     };
     const s3 = new AWS.S3(options); // Pass in opts to S3 if necessary
